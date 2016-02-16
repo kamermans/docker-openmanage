@@ -24,7 +24,7 @@ function start() {
         -v /lib/modules/$(uname -r):/lib/modules/$(uname -r) \
         -e "SNMP_COMMUNITY=$SNMP_COMMUNITY" \
         -e "SNMP_TRAP_DEST=$SNMP_TRAP_DEST" \
-        kamermans/openmanage
+        $DOCKER_IMAGE
 }
 
 function stop() {
@@ -53,6 +53,7 @@ ACTION="$1"
 SNMP_COMMUNITY=${2:-"public"}
 SNMP_TRAP_DEST=${3:-"192.168.0.1"}
 CONTAINER_NAME="openmanage"
+DOCKER_IMAGE="kamermans/docker-openmanage"
 
 case "$ACTION" in
     start)
