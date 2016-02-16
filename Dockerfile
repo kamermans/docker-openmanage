@@ -9,8 +9,8 @@ ENV TOMCATCFG /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/conf/server.xml
 ENV USER root
 ENV PASS password
 
-# systemd is not working, so systemctl fails during the yum install - this works around that
-RUN mv /usr/bin/systemctl /usr/bin/systemctl.old && ln -s /bin/echo /usr/bin/systemctl
+# Prevent daemon helper scripts from making systemd calls
+ENV SYSTEMCTL_SKIP_REDIRECT=1
 
 # Do overall update and install missing packages needed for OpenManage
 RUN yum -y update && \
@@ -31,9 +31,6 @@ RUN yum -y install srvadmin-all && yum clean all
 
 # Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
 RUN sed -i -e 's/SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256/' -e 's/TLS_DHE_RSA_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA/' -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' -e 's/SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/' $TOMCATCFG
-
-# Prevent daemon helper scripts from making systemd calls
-ENV SYSTEMCTL_SKIP_REDIRECT=1
 
 COPY resources/init.sh /init.sh
 
