@@ -1,6 +1,7 @@
 # Use CentOS 7 base image from Docker Hub
 FROM centos:centos7
-MAINTAINER Jose De la Rosa "https://github.com/jose-delarosa"
+MAINTAINER Steve Kamerman "https://github.com/kamermans"
+#MAINTAINER Jose De la Rosa "https://github.com/jose-delarosa"
 
 # Environment variables
 ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
