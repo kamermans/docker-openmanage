@@ -6,11 +6,14 @@ MAINTAINER Steve Kamerman "https://github.com/kamermans"
 # Environment variables
 ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 ENV TOMCATCFG /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/conf/server.xml
+ENV TERM xterm
 ENV USER root
 ENV PASS password
 
 # Prevent daemon helper scripts from making systemd calls
 ENV SYSTEMCTL_SKIP_REDIRECT=1
+
+RUN mkdir -p /run/lock/subsys
 
 # Do overall update and install missing packages needed for OpenManage
 RUN yum -y update && \
