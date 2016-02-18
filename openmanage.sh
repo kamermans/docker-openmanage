@@ -17,7 +17,7 @@ EOF
 }
 
 function start() {
-    docker run -d -P \
+    docker run -d \
         --name="$CONTAINER_NAME" \
         --privileged \
         --net="host" \
