@@ -41,8 +41,12 @@ function status() {
     fi
 }
 
-function upgrade() {
-    docker pull "$CONTAINER_NAME"
+function update() {
+    echo "Updating openmanage.sh"
+    curl -sSL https://raw.githubusercontent.com/kamermans/docker-openmanage/master/openmanage.sh > $0
+
+    echo "Updating Docker image $DOCKER_IMAGE"
+    docker pull "$DOCKER_IMAGE"
 }
 
 if [ "$#" -eq 0 ] || [ "x$1" = "x-h" ] || [ "x$1" = "x--help" ]; then
@@ -68,6 +72,9 @@ case "$ACTION" in
         ;;
     status)
         status
+        ;;
+    update)
+        update
         ;;
     *)
         usage
