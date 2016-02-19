@@ -1,6 +1,6 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
-function usage() {
+usage() {
     cat << EOF
 OpenManage Server Administrator in a Docker Container
 
@@ -16,7 +16,7 @@ EOF
     exit 1
 }
 
-function start() {
+start() {
     docker run -d \
         --name="$CONTAINER_NAME" \
         --privileged \
@@ -27,12 +27,12 @@ function start() {
         $DOCKER_IMAGE
 }
 
-function stop() {
+stop() {
     docker stop  "$CONTAINER_NAME" 2>/dev/null || echo  "$CONTAINER_NAME is not running"
     docker rm -fv "$CONTAINER_NAME" 2>/dev/null || echo -n ""
 }
 
-function status() {
+status() {
     STATUS=$(docker inspect --format='{{ .State.Running }}' "$CONTAINER_NAME" >/dev/null 2>&1 && echo "Running" || echo "Stopped")
     echo "$STATUS"
 
@@ -41,7 +41,7 @@ function status() {
     fi
 }
 
-function update() {
+update() {
     echo "Updating openmanage.sh"
     curl -sSL https://raw.githubusercontent.com/kamermans/docker-openmanage/master/openmanage.sh > $0
 
