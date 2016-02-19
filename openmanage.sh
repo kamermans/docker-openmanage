@@ -17,6 +17,17 @@ EOF
 }
 
 start() {
+    case "$(status)" in
+        Running)
+            echo "Error: Container '$CONTAINER_NAME' is already running"
+            exit 1
+            ;;
+        Stopped)
+            echo "Removing stopped container"
+            docker rm -fv "$CONTAINER_NAME"
+            ;;
+    esac
+
     docker run -d \
         --name="$CONTAINER_NAME" \
         --privileged \
@@ -34,11 +45,10 @@ stop() {
 
 status() {
     STATUS=$(docker inspect --format='{{ .State.Running }}' "$CONTAINER_NAME" >/dev/null 2>&1 && echo "Running" || echo "Stopped")
-    echo "$STATUS"
-
-    if [ "x$STATUS" = "xStopped" ]; then
-        exit 2
+    if [ "$?" -ne 0 ]; then
+        STATUS="Nonexistent"
     fi
+    echo "$STATUS"
 }
 
 update() {
