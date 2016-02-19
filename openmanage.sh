@@ -39,16 +39,27 @@ start() {
 }
 
 stop() {
-    docker stop  "$CONTAINER_NAME" 2>/dev/null || echo  "$CONTAINER_NAME is not running"
-    docker rm -fv "$CONTAINER_NAME" 2>/dev/null || echo -n ""
+    case "$(status)" in
+        Running)
+            echo "Stopping container"
+            docker stop  "$CONTAINER_NAME"
+            echo "Removing stopped container"
+            docker rm -fv "$CONTAINER_NAME"
+            exit 1
+            ;;
+        Stopped)
+            echo "Removing stopped container"
+            docker rm -fv "$CONTAINER_NAME"
+            ;;
+        *)
+            echo "Container is already stopped"
+            ;;
+    esac
 }
 
 status() {
-    STATUS=$(docker inspect --format='{{ .State.Running }}' "$CONTAINER_NAME" >/dev/null 2>&1 && echo "Running" || echo "Stopped")
-    if [ "$?" -ne 0 ]; then
-        STATUS="Nonexistent"
-    fi
-    echo "$STATUS"
+    STATUS=$(docker inspect --format='{{ .State.Running }}' "$CONTAINER_NAME" 2>/dev/null || echo "Nonexistent")
+    echo $STATUS | sed -e 's/true/Running/' -e 's/false/Stopped/g'
 }
 
 update() {
@@ -77,8 +88,7 @@ case "$ACTION" in
         stop
         ;;
     restart)
-        stop
-        start
+        stop && start
         ;;
     status)
         status
