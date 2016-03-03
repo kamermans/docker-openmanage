@@ -27,10 +27,10 @@ RUN /etc/init.d/snmpd start
 RUN echo "$USER:$PASS" | chpasswd
 
 # Add OMSA repo
-RUN wget -q -O - http://linux.dell.com/repo/hardware/latest/bootstrap.cgi | bash
+RUN wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
 
 # Let's "install all", however we can select specific components instead
-RUN yum -y install srvadmin-all && yum clean all
+RUN yum -y install srvadmin-all dell-system-update && yum clean all
 
 # Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
 RUN sed -i -e 's/SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256/' -e 's/TLS_DHE_RSA_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA/' -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' -e 's/SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/' $TOMCATCFG
