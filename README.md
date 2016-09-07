@@ -2,7 +2,7 @@
 
 Dell OpenManage running in a self-contained Docker container. This container will run on RedHat, CentOS, Debian, Ubuntu, and probably most other Linuxes.
 
-Firmware Upgrade
+#Firmware Upgrade
 To upgrade you dell's server firmware from Dell Global repository. Simply run..
 `docker run --rm -ti --privileged --net="host" kamermans/docker-openmanage dsu`
 
@@ -10,7 +10,7 @@ You are presented with an interactive TUI where you can select what firmware upg
 
 Can upgrade all firmware, including but not limited to BIOS, DRAC, RAID controller, NIC.
 
-Server Administrator: 
+#Server Administrator: 
 This is a subtree-split and fork of the OpenManage container that Dell created. Notably, this image includes SNMP support and out-of-the box support for registration in OpenManage Essentials.
 Base Project: https://github.com/jose-delarosa/docker-images/tree/master/openmanage81
 
