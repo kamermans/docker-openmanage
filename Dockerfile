@@ -18,7 +18,7 @@ RUN mkdir -p /run/lock/subsys
 # Do overall update and install missing packages needed for OpenManage
 RUN yum -y update && \
     yum -y install gcc wget perl passwd which tar libstdc++.so.6 compat-libstdc++-33.i686 glibc.i686 \
-        net-snmp net-snmp-sysvinit nano
+        net-snmp net-snmp-sysvinit nano dmidecode
 
 COPY resources/snmpd.conf /etc/snmp/snmpd.conf
 RUN /etc/init.d/snmpd start
