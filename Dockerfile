@@ -13,7 +13,10 @@ ENV PASS password
 # Prevent daemon helper scripts from making systemd calls
 ENV SYSTEMCTL_SKIP_REDIRECT=1
 
-RUN mkdir -p /run/lock/subsys
+# Make subsys dir and fake that we are RHEL (from the official Dell DSET image)
+RUN mkdir -p /run/lock/subsys \
+    && cp /etc/redhat-release /etc/.redhat-release.actual \
+    && echo 'Red Hat Enterprise Linux Server release 6.2 (Santiago)' > /etc/redhat-release
 
 # Do overall update and install missing packages needed for OpenManage
 RUN yum -y update \
@@ -37,10 +40,13 @@ RUN yum -y update \
     && yum clean all
 
 # Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
-RUN sed -i -e 's/SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256/' -e 's/TLS_DHE_RSA_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA/' -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' -e 's/SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/' $TOMCATCFG
-
 # Symlink in older libstorlibir for sasdupie segfault
-RUN ln -sf /opt/dell/srvadmin/lib64/libstorelibir-3.so /opt/dell/srvadmin/lib64/libstorelibir.so.5
+RUN sed -i \
+        -e 's/SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256/' \
+        -e 's/TLS_DHE_RSA_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA/' \
+        -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' \
+        -e 's/SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/' $TOMCATCFG \
+    && ln -sf /opt/dell/srvadmin/lib64/libstorelibir-3.so /opt/dell/srvadmin/lib64/libstorelibir.so.5
 
 COPY resources/init.sh /init.sh
 
