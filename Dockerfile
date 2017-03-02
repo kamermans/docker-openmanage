@@ -16,9 +16,10 @@ ENV SYSTEMCTL_SKIP_REDIRECT=1
 RUN mkdir -p /run/lock/subsys
 
 # Do overall update and install missing packages needed for OpenManage
-RUN yum -y update && \
-    yum -y install gcc wget perl passwd which tar libstdc++.so.6 compat-libstdc++-33.i686 glibc.i686 \
-        net-snmp net-snmp-sysvinit nano dmidecode
+RUN yum -y update \
+    && yum -y install gcc wget perl passwd which tar libstdc++.so.6 compat-libstdc++-33.i686 glibc.i686 \
+        net-snmp net-snmp-sysvinit nano dmidecode libxml2.i686 \
+    && yum clean all
 
 COPY resources/snmpd.conf /etc/snmp/snmpd.conf
 RUN /etc/init.d/snmpd start
@@ -30,10 +31,16 @@ RUN echo "$USER:$PASS" | chpasswd
 RUN wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
 
 # Let's "install all", however we can select specific components instead
-RUN yum -y install srvadmin-all dell-system-update && yum clean all
+RUN yum -y update \
+    && yum -y install \
+        srvadmin-all dell-system-update \
+    && yum clean all
 
 # Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
 RUN sed -i -e 's/SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256/' -e 's/TLS_DHE_RSA_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA/' -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' -e 's/SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/' $TOMCATCFG
+
+# Symlink in older libstorlibir for sasdupie segfault
+RUN ln -sf /opt/dell/srvadmin/lib64/libstorelibir-3.so /opt/dell/srvadmin/lib64/libstorelibir.so.5
 
 COPY resources/init.sh /init.sh
 
