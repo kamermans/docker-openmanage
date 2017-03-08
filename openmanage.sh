@@ -33,6 +33,7 @@ start() {
         --privileged \
         --net="host" \
         -v /lib/modules/$(uname -r):/lib/modules/$(uname -r) \
+        -v /dev:/dev \
         -e "SNMP_COMMUNITY=$SNMP_COMMUNITY" \
         -e "SNMP_TRAP_DEST=$SNMP_TRAP_DEST" \
         $DOCKER_IMAGE
