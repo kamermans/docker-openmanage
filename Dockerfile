@@ -21,7 +21,7 @@ RUN mkdir -p /run/lock/subsys \
 # Do overall update and install missing packages needed for OpenManage
 RUN yum -y update \
     && yum -y install gcc wget perl passwd which tar libstdc++.so.6 compat-libstdc++-33.i686 glibc.i686 \
-        net-snmp net-snmp-sysvinit nano dmidecode libxml2.i686 \
+        net-snmp net-snmp-sysvinit nano dmidecode libxml2.i686 strace less \
     && yum clean all
 
 COPY resources/snmpd.conf /etc/snmp/snmpd.conf
@@ -47,6 +47,9 @@ RUN sed -i \
         -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' \
         -e 's/SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA/' $TOMCATCFG \
     && ln -sf /opt/dell/srvadmin/lib64/libstorelibir-3.so /opt/dell/srvadmin/lib64/libstorelibir.so.5
+
+# Print system information when logging into Bash
+RUN echo "dmidecode -t1" >> ~/.bashrc
 
 COPY resources/init.sh /init.sh
 

@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# Print system information, serial number, etc
+dmidecode -t1
+
 echo "Configuring SNMPD"
 
 if [ "x$SNMP_COMMUNITY" != "x" ]; then
