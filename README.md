@@ -1,9 +1,9 @@
 # docker-openmanage
 
-Dell OpenManage running in a self-contained Docker container. This container will run on RedHat, CentOS, Debian, Ubuntu, and probably most other Linuxes.
+Dell OpenManage and Dell System Update (`dsu`) running in a self-contained Docker container.
 
 # Compatibility
-The host operating system must be Linux, and is known to work in RHEL, CentOS, Debian and Ubuntu.
+The host operating system must be Linux, and is known to work in RHEL, CentOS, Debian and Ubuntu.  The release version of the distribution is not particularly important since they all share the Linux kernel, although it is possible that some issues could exist.
 
 This image has been tested on the following Dell hardware:
 
