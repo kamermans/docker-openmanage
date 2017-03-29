@@ -36,7 +36,9 @@ RUN wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
 # Let's "install all", however we can select specific components instead
 RUN yum -y update \
     && yum -y install \
-        srvadmin-all dell-system-update \
+        srvadmin-all \
+        dell-system-update \
+        ipmitool \
     && yum clean all
 
 # Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
