@@ -11,6 +11,7 @@ This image has been tested on the following Dell hardware:
 |---------------------|--------------|
 | Dell PowerEdge R610 | OK |
 | Dell PowerEdge R620 | OK |
+| Dell PowerEdge R710 | OK |
 | Dell PowerEdge R720 | OK |
 | Dell PowerEdge R720xd | OK |
 | Dell PowerVault NX3000 | OK |
