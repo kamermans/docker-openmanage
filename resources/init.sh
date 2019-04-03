@@ -20,4 +20,4 @@ fi
 /etc/init.d/snmpd start
 srvadmin-services.sh restart
 
-tail -f /opt/dell/srvadmin/var/log/openmanage/dcsys64.xml
+tail -f /opt/dell/srvadmin/var/log/openmanage/*.xml
