@@ -16,8 +16,3 @@ if [ "x$SNMP_TRAP_DEST" != "x" ]; then
     echo "  Setting trap sink (destination) to '$SNMP_TRAP_DEST'"
     sed -i -E "s/^(Trapsink ).* (.*)\$/\1 $SNMP_TRAP_DEST \2/g" /etc/snmp/snmpd.conf
 fi
-
-/etc/init.d/snmpd start
-srvadmin-services.sh restart
-
-tail -f /opt/dell/srvadmin/var/log/openmanage/*.xml

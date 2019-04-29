@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenManage Container Init
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+PassEnvironment=SNMP_COMMUNITY SNMP_TRAP_DEST PATH
+ExecStart=/container-init.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=network.target
