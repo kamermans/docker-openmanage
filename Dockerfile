@@ -56,6 +56,15 @@ RUN echo "dmidecode -t1" >> ~/.bashrc
 COPY resources/init.sh /init.sh
 
 WORKDIR /opt/dell/srvadmin/bin
-CMD ["/init.sh"]
+
+#replace systemctl with a partial reimplementation for docker images
+#https://github.com/gdraheim/docker-systemctl-replacement
+COPY ./resources/systemctl.py /usr/bin/systemctl
+
+#NOTE: the entrypoint script must contain systemd in the first
+#      16 characters of its name so that the Dell srvadmin-services.sh
+#      thinks its running with systemd as PID 1 and executes systemd services
+COPY ./resources/entrypoint.sh /fake-systemd-entrypoint.sh
+ENTRYPOINT ["/fake-systemd-entrypoint.sh"]
 
 EXPOSE 1311 161 162
