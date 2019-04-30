@@ -1,5 +1,5 @@
 # Use CentOS 7 base image from Docker Hub
-FROM centos:centos7
+FROM centos:7.6.1810
 MAINTAINER Steve Kamerman "https://github.com/kamermans"
 #MAINTAINER Jose De la Rosa "https://github.com/jose-delarosa"
 
@@ -18,10 +18,8 @@ ENV container docker
 RUN mkdir -p /run/lock/subsys \
     && echo "$USER:$PASS" | chpasswd \
     # Add OMSA repo
-    && yum -y update \
     && yum -y install \
         gcc wget perl passwd which tar \
-        libstdc++.so.6 compat-libstdc++-33.i686 glibc.i686 \
         nano dmidecode libxml2.i686 strace less \
     # Strip systemd so it can run inside Docker
     # Note: "srvadmin-services.sh enable" doesn't work here because systemd is not PID 1 at build-time (it will be when it's run)
@@ -42,19 +40,12 @@ RUN mkdir -p /run/lock/subsys \
         dell-system-update \
     && cp /etc/redhat-release /etc/.redhat-release.actual \
     && echo 'Red Hat Enterprise Linux Server release 6.2 (Santiago)' > /etc/redhat-release \
-    && yum clean all
-
-
-COPY resources/init.sh /container-init.sh
-COPY resources/snmpd.conf /etc/snmp/snmpd.conf
-COPY resources/container-init.service /usr/lib/systemd/system/container-init.service
-
-RUN localedef -i en_US -f UTF-8 en_US.UTF-8 \
-    && for SVC in container-init snmpd instsvcdrv dsm_sa_eventmgrd dsm_sa_datamgrd dsm_sa_snmpd dsm_om_connsvc; do systemctl enable $SVC.service; done
-
-# Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
-# Symlink in older libstorlibir for sasdupie segfault
-RUN sed -i \
+    && yum clean all \
+    && localedef -i en_US -f UTF-8 en_US.UTF-8 \
+    && for SVC in snmpd instsvcdrv dsm_sa_eventmgrd dsm_sa_datamgrd dsm_sa_snmpd dsm_om_connsvc; do systemctl enable $SVC.service; done \
+    # Replace weak Diffie-Hellman ciphers with Elliptic-Curve Diffie-Hellman
+    # Symlink in older libstorlibir for sasdupie segfault
+    && sed -i \
         -e 's/SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256/' \
         -e 's/TLS_DHE_RSA_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA/' \
         -e 's/TLS_DHE_DSS_WITH_AES_128_CBC_SHA/TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384/' \
@@ -62,9 +53,20 @@ RUN sed -i \
     && ln -sf /opt/dell/srvadmin/lib64/libstorelibir-3.so /opt/dell/srvadmin/lib64/libstorelibir.so.5 \
     && echo "dmidecode -t1" >> ~/.bashrc
 
-WORKDIR /opt/dell/srvadmin/bin
+# Replace systemctl with a partial reimplementation for docker images
+# @see: https://github.com/gdraheim/docker-systemctl-replacement
+COPY ./resources/systemctl.py /usr/bin/systemctl
 
-VOLUME ["/sys/fs/cgroup", "/run"]
-CMD ["/usr/sbin/init"]
+# Note: the entrypoint script must contain systemd in the first
+# 16 characters of its name so that the Dell srvadmin-services.sh script
+# thinks its running with systemd as PID 1 and executes systemd services
+COPY ./resources/entrypoint.sh /fake-systemd-entrypoint.sh
+
+COPY resources/snmpd.conf /etc/snmp/snmpd.conf
+
+ENTRYPOINT ["/fake-systemd-entrypoint.sh"]
+CMD ["tail", "-f", "/opt/dell/srvadmin/var/log/openmanage/*.xml"]
+
+WORKDIR /opt/dell/srvadmin/bin
 
 EXPOSE 1311 161 162
