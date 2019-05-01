@@ -20,7 +20,7 @@ RUN mkdir -p /run/lock/subsys \
     # Add OMSA repo
     && yum -y install \
         gcc wget perl passwd which tar \
-        nano dmidecode libxml2.i686 strace less \
+        nano dmidecode strace less \
     # Strip systemd so it can run inside Docker
     # Note: "srvadmin-services.sh enable" doesn't work here because systemd is not PID 1 at build-time (it will be when it's run)
     && (cd /usr/lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
@@ -38,8 +38,6 @@ RUN mkdir -p /run/lock/subsys \
         srvadmin-all \
         ipmitool \
         dell-system-update \
-    && cp /etc/redhat-release /etc/.redhat-release.actual \
-    && echo 'Red Hat Enterprise Linux Server release 6.2 (Santiago)' > /etc/redhat-release \
     && yum clean all \
     && localedef -i en_US -f UTF-8 en_US.UTF-8 \
     && for SVC in snmpd instsvcdrv dsm_sa_eventmgrd dsm_sa_datamgrd dsm_sa_snmpd dsm_om_connsvc; do systemctl enable $SVC.service; done \
