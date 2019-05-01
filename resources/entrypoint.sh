@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 # Print system information, serial number, etc
 dmidecode -t1
@@ -17,7 +17,14 @@ if [ "x$SNMP_TRAP_DEST" != "x" ]; then
     sed -i -E "s/^(Trapsink ).* (.*)\$/\1 $SNMP_TRAP_DEST \2/g" /etc/snmp/snmpd.conf
 fi
 
-/etc/init.d/snmpd start
-srvadmin-services.sh restart
+# Start Dell services
+echo "Starting Dell services, this may take a few minutes..."
+systemctl start snmpd.service
+srvadmin-services.sh start
+srvadmin-services.sh status
 
-tail -f /opt/dell/srvadmin/var/log/openmanage/*.xml
+# Run any passed commands
+if [ "$#" -gt 0 ]; then
+    # Use eval instead of exec so this script remains PID 1
+    eval "$@"
+fi

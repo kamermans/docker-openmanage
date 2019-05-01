@@ -2,6 +2,8 @@
 
 Dell OpenManage and Dell System Update (`dsu`) running in a self-contained Docker container.
 
+> Note: this project includes the [`systemctl` replacement from @gdraheim](https://github.com/gdraheim/docker-systemctl-replacement).
+
 # Compatibility
 The host operating system must be Linux, and is known to work in RHEL, CentOS, Debian and Ubuntu.  The release version of the distribution is not particularly important since they all share the Linux kernel, although it is possible that some issues could exist.
 
@@ -23,14 +25,14 @@ If you have tested this image on other hardware, please share your results in th
 # Firmware Upgrade
 To upgrade you Dell's server firmware from Dell Global repository, simply run:
 
-`docker run --rm -ti --privileged --net=host -v /dev:/dev kamermans/docker-openmanage dsu`
+`docker run --rm -ti --privileged --net=host -v /dev:/dev  kamermans/docker-openmanage dsu`
 
 You are presented with an interactive text interface where you can select the updates that you would like to apply based on what is available for your Dell server.
 
 > Note: I was able to obtain some of the functionality of this container by reverse-engineering the Dell DSET Live ISO Image.  I have also created a Docker-based version of DSET, which is available in Docker Hub as [kamermans/dell-dset](https://hub.docker.com/r/kamermans/dell-dset/).  This image has only one layer and no Dockerfile as it is a verbatim copy of the OS filesystem from the Dell ISO image.  This image is tagged to match the ISO version, so `kamermans/dell-dset:SLI22_A00` matches the Dell ISO `SLI22_A00`.
 
 # Server Administrator
-This is a subtree-split and fork of the OpenManage container that Dell created. Notably, this image includes SNMP support and out-of-the box support for registration in OpenManage Essentials.
+This is losely based on the OpenManage container that Dell created. Notably, this image includes SNMP support and out-of-the box support for registration in OpenManage Essentials.
 Base Project: https://github.com/jose-delarosa/docker-images/tree/master/openmanage81
 
 The easiest way to get up and running is to download the standalone startup script, `openmanage.sh`
