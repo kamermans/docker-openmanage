@@ -2,6 +2,8 @@
 
 Dell OpenManage and Dell System Update (`dsu`) running in a self-contained Docker container.
 
+> Note: this project includes the [`systemctl` replacement from @gdraheim](https://github.com/gdraheim/docker-systemctl-replacement).
+
 # Compatibility
 The host operating system must be Linux, and is known to work in RHEL, CentOS, Debian and Ubuntu.  The release version of the distribution is not particularly important since they all share the Linux kernel, although it is possible that some issues could exist.
 
@@ -30,10 +32,8 @@ You are presented with an interactive text interface where you can select the up
 > Note: I was able to obtain some of the functionality of this container by reverse-engineering the Dell DSET Live ISO Image.  I have also created a Docker-based version of DSET, which is available in Docker Hub as [kamermans/dell-dset](https://hub.docker.com/r/kamermans/dell-dset/).  This image has only one layer and no Dockerfile as it is a verbatim copy of the OS filesystem from the Dell ISO image.  This image is tagged to match the ISO version, so `kamermans/dell-dset:SLI22_A00` matches the Dell ISO `SLI22_A00`.
 
 # Server Administrator
-This is losely based on the OpenManage container that Dell created. Notably, this image includes SNMP support and out-of-the box support for registration in OpenManage Essentials and `systemd` support.
+This is losely based on the OpenManage container that Dell created. Notably, this image includes SNMP support and out-of-the box support for registration in OpenManage Essentials.
 Base Project: https://github.com/jose-delarosa/docker-images/tree/master/openmanage81
-
-> Note: the latest version of OpenManage requires systemd, even when used in this Docker container.  If you run this on a host without systemd running, the OpenManage services will not start!
 
 The easiest way to get up and running is to download the standalone startup script, `openmanage.sh`
 from https://raw.githubusercontent.com/kamermans/docker-openmanage/master/openmanage.sh
@@ -75,7 +75,6 @@ If you choose not to learn bash, here's how to run the container without the ini
         --net="host" \
         -v /lib/modules/$(uname -r):/lib/modules/$(uname -r):ro \
         -v /dev:/dev \
-        -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
         -e "SNMP_COMMUNITY=snmp_community" \
         -e "SNMP_TRAP_DEST=snmp_trap_dest" \
         kamermans/docker-openmanage
