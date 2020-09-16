@@ -22,6 +22,8 @@ This image has been tested on the following Dell hardware:
 
 If you have tested this image on other hardware, please share your results in the form of a GitHub issue or Pull Request, and I'll update the list!
 
+> Note: if you get the error `USB is not enabled. Please enable USB and try update again`, you should make sure the `usb-storage` kernel module is loaded on the host machine.  You can check this with `lsmod | grep usb-storage` and load it with `modprobe usb-storage`.  To make this change permanent, add it to your system's auto-loaded modules (for example, on Debian/Ubuntu: `echo usb-storage > /etc/modules-load.d/usb-storage.conf`).
+
 # Firmware Upgrade
 To upgrade you Dell's server firmware from Dell Global repository, simply run:
 
@@ -41,7 +43,7 @@ from https://raw.githubusercontent.com/kamermans/docker-openmanage/master/openma
 ```
 # curl -sSL https://raw.githubusercontent.com/kamermans/docker-openmanage/master/openmanage.sh > ./openmanage.sh
 # chmod +x openmanage.sh
-# ./openmanage.sh 
+# ./openmanage.sh
 
 OpenManage Server Administrator in a Docker Container
 
@@ -61,7 +63,7 @@ From here you can start the container (the image will be downloaded from Docker 
 To connect it to OpenManage Essentials, you'll need to pass the `snmp_community` and `snmp_trap_dest` arguments
 so OpenManage Server Administrator knows how to connect to it.
 
-Note that this container uses the Docker options `--privileged`, `-v /dev:/dev` and `--net=host` in order to access your server 
+Note that this container uses the Docker options `--privileged`, `-v /dev:/dev` and `--net=host` in order to access your server
 hardware and correctly report the network configuration.
 
 If you are hesitent to download and run a bash script from some random site on the internet, and you can't understand
