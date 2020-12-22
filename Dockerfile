@@ -20,7 +20,7 @@ RUN mkdir -p /run/lock/subsys \
     # Add OMSA repo
     && yum -y install \
         gcc wget perl passwd which tar \
-        nano dmidecode strace less \
+        nano dmidecode strace less openssl-devel \
     # Strip systemd so it can run inside Docker
     # Note: "srvadmin-services.sh enable" doesn't work here because systemd is not PID 1 at build-time (it will be when it's run)
     && (cd /usr/lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
