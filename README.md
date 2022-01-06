@@ -11,6 +11,7 @@ This image has been tested on the following Dell hardware:
 
 | Hardware            | Status       |
 |---------------------|--------------|
+| Dell PowerEdge R510 | OK |
 | Dell PowerEdge R610 | OK |
 | Dell PowerEdge R620 | OK |
 | Dell PowerEdge R710 | OK |
