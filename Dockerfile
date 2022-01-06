@@ -62,9 +62,7 @@ COPY ./resources/entrypoint.sh /fake-systemd-entrypoint.sh
 
 COPY resources/snmpd.conf /etc/snmp/snmpd.conf
 
-ENTRYPOINT ["/fake-systemd-entrypoint.sh"]
-CMD ["tail", "-f", "/opt/dell/srvadmin/var/log/openmanage/*.xml"]
-
 WORKDIR /opt/dell/srvadmin/bin
 
 EXPOSE 1311 161 162
+ENTRYPOINT ["/fake-systemd-entrypoint.sh"]

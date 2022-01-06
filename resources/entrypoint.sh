@@ -28,3 +28,4 @@ if [ "$#" -gt 0 ]; then
     # Use eval instead of exec so this script remains PID 1
     eval "$@"
 fi
+tail -f /opt/dell/srvadmin/var/log/openmanage/*.xml
